@@ -1,0 +1,29 @@
+# 生产环境配置
+spring:
+  data:
+    redis:
+      # 从 docker-compose 中获取
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      database: 0
+  datasource:
+    # 从 docker-compose 中获取
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      # 连接池配置
+      maximum-pool-size: 50          # 生产环境更多连接
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+      # 连接测试配置
+      connection-test-query: SELECT 1
+      validation-timeout: 5000
+
+      # 连接命名（便于调试）
+      pool-name: HikariCP-Production

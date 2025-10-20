@@ -1,0 +1,112 @@
+<configuration>
+    <!-- 引入 Spring Boot 默认配置 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- 控制台输出配置 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 控制台日志格式：彩色输出，便于开发调试 -->
+        <encoder>
+            <!-- 彩色日志格式，便于在控制台中区分不同级别的日志 -->
+            <!-- %yellow()：黄色显示时间 -->
+            <!-- %highlight()：高亮显示日志级别（不同级别不同颜色） -->
+            <!-- %cyan()：青色显示类名和行号 -->
+            <!-- %green()：绿色显示线程名 -->
+            <pattern>[%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) -%highlight(%5p)] %cyan(%c{5}[%L]) [%green(%thread)] :%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 日志文件输出配置 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志文件路径 -->
+        <file>logs/application.log</file>
+
+        <!-- 日志滚动策略：按时间和大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按日期滚动：每天一个文件，格式为 application.2025-10-20.0.log -->
+            <!-- %d{yyyy-MM-dd}：日期格式，按天分割 -->
+            <!-- %i：当同一天文件超过大小限制时的序号（0,1,2...） -->
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+            <!-- 同时按时间和大小触发滚动 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- 单个日志文件最大大小：100MB -->
+                <!-- 超过100MB时会创建新文件，序号递增 -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+
+            <!-- 保留历史日志文件的天数：30天 -->
+            <!-- 超过30天的日志文件会自动删除，节省磁盘空间 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <!-- 日志格式配置 -->
+        <encoder>
+            <!-- 日志输出格式：[时间] [线程] 级别 类名 - 消息 -->
+            <!-- %d{yyyy-MM-dd HH:mm:ss.SSS}：精确到毫秒的时间 -->
+            <!-- %thread：线程名 -->
+            <!-- %-5level：日志级别，左对齐5个字符 -->
+            <!-- %logger{36}：类名，最长36个字符 -->
+            <!-- %msg：日志消息 -->
+            <!-- %n：换行符 -->
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 开发环境配置：spring.profiles.active=dev 时生效 -->
+    <springProfile name="dev">
+        <!-- 应用日志：DEBUG级别，显示详细的调试信息 -->
+        <logger name="top.mqxu.api" level="DEBUG"/>
+        <!-- Spring Security：DEBUG级别，显示认证过程详情 -->
+        <logger name="org.springframework.security" level="DEBUG"/>
+        <!-- Druid连接池：DEBUG级别，显示SQL执行情况 -->
+        <logger name="com.alibaba.druid" level="DEBUG"/>
+        <!-- Spring Web：DEBUG级别，显示HTTP请求详情 -->
+        <logger name="org.springframework.web" level="DEBUG"/>
+
+        <!-- 根日志配置：INFO级别，同时输出到控制台和文件 -->
+        <!-- 开发环境需要控制台输出便于调试，文件输出便于查看历史 -->
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境配置：spring.profiles.active=prod 时生效 -->
+    <springProfile name="prod">
+        <!-- 应用日志：INFO级别，记录重要业务操作 -->
+        <logger name="top.mqxu.api" level="INFO"/>
+        <!-- Spring Security：WARN级别，只记录安全相关警告和错误 -->
+        <logger name="org.springframework.security" level="WARN"/>
+        <!-- Spring Web：WARN级别，只记录HTTP相关警告和错误 -->
+        <logger name="org.springframework.web" level="WARN"/>
+        <!-- Spring DAO：WARN级别，只记录数据库访问警告和错误 -->
+        <logger name="org.springframework.dao" level="WARN"/>
+        <!-- Druid连接池：WARN级别，只记录连接池相关警告和错误 -->
+        <logger name="com.alibaba.druid" level="WARN"/>
+        <!-- Hibernate：WARN级别，只记录ORM相关警告和错误 -->
+        <logger name="org.hibernate" level="WARN"/>
+        <!-- HikariCP：WARN级别，只记录连接池相关警告和错误 -->
+        <logger name="com.zaxxer.hikari" level="WARN"/>
+
+        <!-- 生产环境根日志配置：INFO级别，仅输出到文件 -->
+        <!-- 生产环境不需要控制台输出，避免日志污染终端 -->
+        <!-- 只输出到文件便于日志收集和分析 -->
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- 默认配置：既不是dev也不是prod时生效（如test环境） -->
+    <springProfile name="!dev,!prod">
+        <!-- 应用日志：INFO级别 -->
+        <logger name="top.mqxu.api" level="INFO"/>
+        <!-- Spring框架：INFO级别 -->
+        <logger name="org.springframework" level="INFO"/>
+
+        <!-- 默认根日志配置：INFO级别，同时输出到控制台和文件 -->
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>
