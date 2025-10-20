@@ -3,6 +3,8 @@ package top.mqxu.api.common.exception;
 import lombok.Getter;
 import top.mqxu.api.common.result.ResultCode;
 
+import java.io.Serial;
+
 /**
  * 自定义业务异常
  *
@@ -11,9 +13,10 @@ import top.mqxu.api.common.result.ResultCode;
 @Getter
 public class ServerException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    private int code;
+    private final int code;
 
     public ServerException(String message) {
         super(message);
