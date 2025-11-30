@@ -5,12 +5,16 @@ server:
     threads:
       max: 1000
       min-spare: 30
-  port: 8083
+  port: 8080
   servlet:
-    context-path: /
+    context-path: /api-template
     session:
       cookie:
         http-only: true
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
 
 # Knife4j 配置
 knife4j:
@@ -33,6 +37,34 @@ spring:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+
+  ai:
+    dashscope:
+      # 阿里云 DashScope API Key（从系统环境读取）
+      api-key: ${DASH_SCOPE_API_KEY:sk-6c729fffee9e41509d229b7dbadb6ab5}
+      base-url: https://dashscope.aliyuncs.com/api/v1/
+      read-timeout: 8000     #读取超时（8秒）
+      chat:
+        #模型参数
+        options:
+          model: qwen-turbo  # 使用 qwen-plus 模型
+          #基础参数：压缩计算量
+          temperature: 0.2  #低随机性，减少冗余计算
+          seed: 12345    #固定随机种子，确保结果可重现
+          top_p: 0.6   #核采样参数，限制候选词范围
+          top_k: 30  #限制每步候选词数量
+          max_tokens: 2000  #限制输出长度
+          repetition_penalty: 1.1  #轻度重复惩罚
+          #          incremental-output: true # 启用增量输出
+          #关闭非必要功能
+          #          enable_search: false  #无实时搜索，默认值为false
+          #          enable_thinking: false #无实时思考，默认值为false
+          #          multi-model: false   #是否开启多模态
+          #响应格式：简洁文本
+          response-format: { type: "text" } #还有json_object
+          #禁用工具调试
+          tools: [ ]
+          tool-choice: "none"
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
@@ -84,3 +116,10 @@ wechat:
   url: https://api.weixin.qq.com/sns/jscode2session
   app-id: ${wechat.app-id}
   app-secret: ${wechat.app-secret}
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+

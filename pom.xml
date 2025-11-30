@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>top.mqxu</groupId>
+    <groupId>top.wang</groupId>
     <artifactId>api-template</artifactId>
     <version>1.0.0</version>
     <name>api-template</name>
@@ -33,7 +33,22 @@
         <httpclient.version>4.5.14</httpclient.version>
         <cloopen.sms.version>1.0.4</cloopen.sms.version>
         <aliyun-oss.version>3.18.1</aliyun-oss.version>
+        <spring-ai-alibaba.version>1.0.0.4</spring-ai-alibaba.version>
+        <!-- 添加Lombok版本 -->
+        <lombok.version>1.18.38</lombok.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.cloud.ai</groupId>
+                <artifactId>spring-ai-alibaba-bom</artifactId>
+                <version>${spring-ai-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot Starters -->
@@ -106,6 +121,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -158,6 +174,20 @@
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Spring AI (可选，如果不需要可以注释掉) -->
+        <dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 自定义starter -->
+        <dependency>
+            <groupId>top.wuhao</groupId>
+            <artifactId>wuhao-spring-boot-starter-common</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -171,6 +201,11 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                        </exclude>
+                        <!-- 如果需要排除AI依赖 -->
+                        <exclude>
+                            <groupId>com.alibaba.cloud.ai</groupId>
+                            <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
                         </exclude>
                     </excludes>
                 </configuration>
