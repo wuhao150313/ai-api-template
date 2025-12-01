@@ -89,8 +89,14 @@ public class SecurityConfig {
                         .requestMatchers("/ai/**").permitAll()
                         // 放行智能体测试接口
                         .requestMatchers("/api/**").permitAll()
-                        // 放行 Knife4j 文档
-                        .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        // 放行文档相关（Swagger / SpringDoc）
+                        .requestMatchers(
+                                "/doc.html",
+                                "/webjars/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         // 放行健康检查
                         .requestMatchers("/actuator/**").permitAll()
                         // 放行 Druid 监控

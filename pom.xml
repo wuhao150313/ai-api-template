@@ -25,7 +25,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <hutool.version>5.8.40</hutool.version>
-        <knife4j.version>4.5.0</knife4j.version>
         <springdoc.version>2.8.8</springdoc.version>
         <druid.version>1.2.25</druid.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -105,23 +104,13 @@
             <version>${druid.version}</version>
         </dependency>
 
-        <!-- API Documentation -->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <!-- API Documentation: 使用 SpringDoc 官方 Swagger UI，替代 Knife4j -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
+
 
         <!-- Utils -->
         <dependency>

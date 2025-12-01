@@ -18,7 +18,7 @@ server:
 
 # Knife4j 配置
 knife4j:
-  enable: false
+  enable: true
   setting:
     custom-code: 500
     enable-footer-custom: false

@@ -15,6 +15,6 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         System.out.println("AI 演示项目启动成功！");
-        System.out.println("接口文档地址：http://localhost:8080/api-template/doc.html");
+        System.out.println("Swagger 文档地址：http://localhost:8080/api-template/swagger-ui.html");
     }
 }

@@ -46,7 +46,7 @@ public class Knife4jConfig {
     @Bean
     public GroupedOpenApi myApi() {
         String[] paths = {"/**"};
-        String[] packagedToMatch = {"top.wang.api.controller"};
+        String[] packagedToMatch = {"top.wuhao.api.controller"};
         return GroupedOpenApi.builder()
                 .group("1")
                 .displayName("SpringAIAlibaba API")
