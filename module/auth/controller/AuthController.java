@@ -9,7 +9,6 @@ import top.wang.api.common.utils.SecurityUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.wang.api.common.result.Result;
-import top.wang.api.module.auth.model.dto.*;
 import top.wang.api.entity.vo.TokenVO;
 import top.wang.api.module.auth.service.AuthService;
 

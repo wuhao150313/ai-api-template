@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>校园智能助手</title>
+    <meta charset="UTF-8"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        #chat {
+            border: 1px solid #ccc;
+            height: 500px;
+            padding: 20px;
+            overflow-y: scroll;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .user {
+            background: #e3f2fd;
+            text-align: right;
+        }
+
+        .bot {
+            background: #f1f8e9;
+        }
+
+        #input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>🎓 校园智能助手 "小椰"</h1>
+<div id="chat"></div>
+<input id="input" placeholder="输入你的问题，例如：今天天气怎么样？">
+
+<script>
+    const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('input');
+
+    input.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter' && input.value.trim()) {
+            const message = input.value.trim();
+            addMessage(message, 'user');
+            input.value = '';
+
+            const response = await fetch('http://localhost:8080/api-template/api/v2/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({userId, message})
+            });
+
+            const data = await response.json();
+            addMessage(data.answer, 'bot');
+        }
+    });
+
+    function addMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+        div.textContent = text;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+    }
+</script>
+</body>
+</html>

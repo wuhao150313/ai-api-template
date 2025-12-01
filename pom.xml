@@ -33,7 +33,7 @@
         <httpclient.version>4.5.14</httpclient.version>
         <cloopen.sms.version>1.0.4</cloopen.sms.version>
         <aliyun-oss.version>3.18.1</aliyun-oss.version>
-        <spring-ai-alibaba.version>1.0.0.4</spring-ai-alibaba.version>
+
         <!-- 添加Lombok版本 -->
         <lombok.version>1.18.38</lombok.version>
     </properties>
@@ -43,7 +43,7 @@
             <dependency>
                 <groupId>com.alibaba.cloud.ai</groupId>
                 <artifactId>spring-ai-alibaba-bom</artifactId>
-                <version>${spring-ai-alibaba.version}</version>
+                <version>1.1.0.0-M5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -51,6 +51,12 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-agent-framework</artifactId>
+            <version>1.1.0.0-M5</version>
+        </dependency>
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -179,7 +185,14 @@
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+            <version>1.0.0.4</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- 自定义starter -->

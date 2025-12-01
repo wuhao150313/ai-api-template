@@ -47,7 +47,7 @@ spring:
       chat:
         #模型参数
         options:
-          model: qwen-turbo  # 使用 qwen-plus 模型
+          model: qwen-max  # 使用 qwen-plus 模型
           #基础参数：压缩计算量
           temperature: 0.2  #低随机性，减少冗余计算
           seed: 12345    #固定随机种子，确保结果可重现
