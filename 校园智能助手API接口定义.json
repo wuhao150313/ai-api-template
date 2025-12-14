@@ -1,0 +1,294 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "校园智能助手 API 接口定义",
+  "version": "1.0",
+  "description": "校园智能助手 API 的完整接口定义，采用 JSON Schema 格式，便于 AI 自动解析和生成代码",
+  "baseUrl": "http://localhost:8082",
+  "apis": {
+    "simpleChat": {
+      "method": "GET",
+      "path": "/api/v1/chat",
+      "description": "简单的单次对话接口，不支持上下文记忆",
+      "controller": "SimpleAgentController",
+      "authentication": false,
+      "request": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "用户的问题",
+            "default": "图书馆在哪里",
+            "example": "今天天气怎么样"
+          }
+        },
+        "required": []
+      },
+      "response": {
+        "type": "string",
+        "description": "AI 返回的纯文本回答",
+        "contentType": "text/plain; charset=utf-8",
+        "example": "今天南京的天气是晴天，温度22°C，适合出行，建议穿长袖。"
+      },
+      "example": {
+        "request": "GET /api/v1/chat?question=今天天气怎么样",
+        "response": "今天南京的天气是晴天，温度22°C，适合出行，建议穿长袖。"
+      }
+    },
+    "advancedChat": {
+      "method": "POST",
+      "path": "/api/v2/chat",
+      "description": "支持多轮对话的智能对话接口，具有上下文记忆功能",
+      "controller": "AdvancedAgentController",
+      "authentication": false,
+      "contentType": "application/json",
+      "request": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户唯一标识，用于生成和维护 threadId。相同 userId 的请求会共享同一个对话上下文",
+            "required": true,
+            "example": "user123"
+          },
+          "message": {
+            "type": "string",
+            "description": "用户发送的消息内容",
+            "required": true,
+            "example": "帮我查一下今天的天气"
+          }
+        },
+        "required": ["userId", "message"]
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID",
+            "example": "user123"
+          },
+          "threadId": {
+            "type": "string",
+            "description": "线程ID，用于维护对话上下文",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "answer": {
+            "type": "string",
+            "description": "AI 返回的主要回答内容（自然语言）",
+            "example": "今天南京的天气是晴天，温度22°C，适合出行，建议穿长袖。"
+          },
+          "type": {
+            "type": "string",
+            "description": "回答类型",
+            "enum": ["weather", "course", "library", "general"],
+            "default": "general",
+            "example": "weather"
+          },
+          "suggestion": {
+            "type": "string",
+            "description": "给用户的建议文案",
+            "default": "请根据你的需求，给出一个建议",
+            "example": "建议根据天气情况选择合适的衣物"
+          },
+          "needsFurtherHelp": {
+            "type": "boolean",
+            "description": "是否需要进一步帮助",
+            "default": false,
+            "example": false
+          }
+        },
+        "required": ["answer", "type", "suggestion", "needsFurtherHelp"]
+      },
+      "example": {
+        "request": {
+          "userId": "user123",
+          "message": "帮我查一下今天的天气"
+        },
+        "response": {
+          "userId": "user123",
+          "threadId": "550e8400-e29b-41d4-a716-446655440000",
+          "answer": "今天南京的天气是晴天，温度22°C，适合出行，建议穿长袖。",
+          "type": "weather",
+          "suggestion": "建议根据天气情况选择合适的衣物",
+          "needsFurtherHelp": false
+        }
+      },
+      "multiTurnExample": {
+        "turn1": {
+          "request": {
+            "userId": "user123",
+            "message": "我是学号20220001的学生"
+          },
+          "response": {
+            "answer": "你好！我是小椰，很高兴为你服务。",
+            "threadId": "xxx-xxx-xxx"
+          }
+        },
+        "turn2": {
+          "request": {
+            "userId": "user123",
+            "message": "帮我查一下我的课程表"
+          },
+          "response": {
+            "answer": "根据你的学号20220001，你的课程安排如下：...",
+            "threadId": "xxx-xxx-xxx"
+          },
+          "note": "AI 会记住之前提到的学号，因为使用了相同的 userId 和 threadId"
+        }
+      }
+    },
+    "getHistory": {
+      "method": "GET",
+      "path": "/api/v2/history/{userId}",
+      "description": "根据 userId 查询该用户对应的对话 threadId 和简化的历史信息",
+      "controller": "AdvancedAgentController",
+      "authentication": false,
+      "pathParameters": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID",
+            "required": true,
+            "example": "user123"
+          }
+        },
+        "required": ["userId"]
+      },
+      "response": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "成功响应",
+            "properties": {
+              "userId": {
+                "type": "string",
+                "example": "user123"
+              },
+              "threadId": {
+                "type": "string",
+                "format": "uuid",
+                "example": "550e8400-e29b-41d4-a716-446655440000"
+              },
+              "history": {
+                "type": "string",
+                "description": "历史记录内容（当前为占位文本）",
+                "example": "历史记录功能需要进一步实现"
+              }
+            },
+            "required": ["userId", "threadId", "history"]
+          },
+          {
+            "type": "object",
+            "description": "错误响应（未找到用户历史）",
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "错误信息",
+                "example": "未找到该用户的历史记录"
+              }
+            },
+            "required": ["error"]
+          }
+        ]
+      },
+      "example": {
+        "request": "GET /api/v2/history/user123",
+        "successResponse": {
+          "userId": "user123",
+          "threadId": "550e8400-e29b-41d4-a716-446655440000",
+          "history": "历史记录功能需要进一步实现"
+        },
+        "errorResponse": {
+          "error": "未找到该用户的历史记录"
+        }
+      }
+    }
+  },
+  "agentInfo": {
+    "name": "小椰",
+    "role": "贴心的校园智能助手",
+    "description": "专门服务大学生群体",
+    "capabilities": [
+      "查询天气信息，帮助学生决定穿衣和出行",
+      "查询课程表，提醒学生上课时间地点",
+      "查询图书馆座位情况，帮助学生找到自习位置",
+      "回答各类校园生活问题"
+    ],
+    "personality": {
+      "tone": "轻松友好，像学长学姐一样亲切",
+      "style": "具体实用，不空泛",
+      "interaction": "主动提供相关建议，适当使用 emoji"
+    },
+    "tools": [
+      {
+        "name": "getWeather",
+        "description": "查询天气信息",
+        "trigger": "用户提到天气、温度、穿衣建议时",
+        "input": "城市名称（如：北京、上海、南京）",
+        "output": "天气情况、温度、穿衣建议"
+      },
+      {
+        "name": "getCourseInfo",
+        "description": "查询课程信息",
+        "trigger": "用户问课程、课表、上课地点时",
+        "input": "学生学号",
+        "output": "课程名称、时间、地点"
+      },
+      {
+        "name": "getLibrarySeat",
+        "description": "查询图书馆座位情况",
+        "trigger": "用户问图书馆、自习、座位时",
+        "input": "查询条件（可选）",
+        "output": "空闲座位数、位置信息"
+      },
+      {
+        "name": "getCampusInfo",
+        "description": "查询校园相关信息",
+        "trigger": "其他校园相关问题",
+        "input": "查询关键词",
+        "output": "校园相关信息（如图书馆、食堂、教务处等）"
+      }
+    ]
+  },
+  "typescriptTypes": {
+    "RequestDTO": {
+      "type": "interface",
+      "definition": "interface RequestDTO {\n  userId: string;    // 用户唯一标识\n  message: string;   // 用户消息内容\n}"
+    },
+    "AssistantResponse": {
+      "type": "interface",
+      "definition": "interface AssistantResponse {\n  userId?: string;              // 用户ID\n  threadId?: string;            // 线程ID\n  answer: string;               // AI回答\n  type: 'weather' | 'course' | 'library' | 'general';  // 回答类型\n  suggestion: string;           // 建议\n  needsFurtherHelp: boolean;    // 是否需要进一步帮助\n}"
+    },
+    "HistoryResponse": {
+      "type": "interface",
+      "definition": "interface HistoryResponse {\n  userId: string;\n  threadId: string;\n  history: string;\n}"
+    },
+    "ErrorResponse": {
+      "type": "interface",
+      "definition": "interface ErrorResponse {\n  error: string;\n}"
+    }
+  },
+  "usageNotes": {
+    "userIdManagement": {
+      "loggedInUser": "使用用户ID作为 userId",
+      "guestUser": "使用浏览器 localStorage 或 sessionStorage 生成唯一ID",
+      "persistence": "建议将 userId 和 threadId 保存到本地存储"
+    },
+    "contextManagement": {
+      "maintainContext": "使用相同的 userId 来维持对话上下文",
+      "newConversation": "如果需要开始新对话，可以生成新的 userId"
+    },
+    "performance": {
+      "simpleQuery": "对于简单查询，使用 v1 接口（无状态，响应更快）",
+      "contextualChat": "对于需要上下文的对话，使用 v2 接口",
+      "timeout": "合理设置请求超时时间"
+    }
+  }
+}
+
+
+
+
+

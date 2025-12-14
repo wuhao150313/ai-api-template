@@ -13,6 +13,7 @@ import top.wuhao.api.common.utils.SecurityUtils;
 import top.wuhao.api.entity.dto.LoginDTO;
 import top.wuhao.api.entity.vo.TokenVO;
 import top.wuhao.api.service.IUserService;
+import top.wuhao.api.entity.vo.UserInfoVO;
 
 /**
  * <p>
@@ -46,10 +47,10 @@ public class UserController {
         return Result.ok();
     }
 
-//    @GetMapping("/user-info")
-//    @Operation(summary = "获取当前用户信息", security = @SecurityRequirement(name = "Authorization"))
-//    public Result<UserInfoVO> getCurrentUserInfo() {
-//        UserInfoVO userInfo = userService.getCurrentUserInfo();
-//        return Result.ok(userInfo);
-//    }
+   @GetMapping("/user-info")
+   @Operation(summary = "获取当前用户信息", security = @SecurityRequirement(name = "Authorization"))
+   public Result<UserInfoVO> getCurrentUserInfo() {
+       UserInfoVO userInfo = userService.getCurrentUserInfo();
+       return Result.ok(userInfo);
+   }
 }

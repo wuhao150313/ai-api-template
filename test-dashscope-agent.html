@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿里云智能体测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-container h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .result-content {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            min-height: 100px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Markdown 样式 */
+        .result-content h1,
+        .result-content h2,
+        .result-content h3,
+        .result-content h4,
+        .result-content h5,
+        .result-content h6 {
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .result-content h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        .result-content h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        .result-content h3 { font-size: 1.25em; }
+        .result-content h4 { font-size: 1em; }
+        .result-content h5 { font-size: 0.875em; }
+        .result-content h6 { font-size: 0.85em; color: #6a737d; }
+
+        .result-content p {
+            margin-bottom: 1em;
+            line-height: 1.6;
+        }
+
+        .result-content ul,
+        .result-content ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+
+        .result-content li {
+            margin-bottom: 0.25em;
+        }
+
+        .result-content code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .result-content pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 1em;
+        }
+
+        .result-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .result-content blockquote {
+            border-left: 4px solid #dfe2e5;
+            padding-left: 16px;
+            margin: 0 0 1em 0;
+            color: #6a737d;
+        }
+
+        .result-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+
+        .result-content table th,
+        .result-content table td {
+            border: 1px solid #dfe2e5;
+            padding: 8px 12px;
+        }
+
+        .result-content table th {
+            background: #f6f8fa;
+            font-weight: 600;
+        }
+
+        .result-content hr {
+            border: none;
+            border-top: 1px solid #eaecef;
+            margin: 1.5em 0;
+        }
+
+        .result-content strong {
+            font-weight: 600;
+        }
+
+        .result-content em {
+            font-style: italic;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+
+        .success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .info-box code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .config-info {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .config-info strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 阿里云智能体测试</h1>
+            <p>配置已从 application.yml 自动读取，只需输入问题即可</p>
+        </div>
+        
+        <div class="content">
+            <div class="config-info">
+                <strong>配置信息：</strong> APP_ID 和 API_KEY 已从后端配置文件自动读取，无需手动输入
+            </div>
+
+            <div class="info-box">
+                <strong>📝 使用说明：</strong><br>
+                1. 在下方输入框中输入你的问题<br>
+                2. 点击"发送请求"按钮或按 <code>Ctrl + Enter</code> 提交<br>
+                3. 答案将以 Markdown 格式显示在下方
+            </div>
+
+            <form id="testForm">
+                <div class="form-group">
+                    <label for="prompt">请输入你的问题 *</label>
+                    <textarea 
+                        id="prompt" 
+                        placeholder="例如：你是谁？或者：请介绍一下国家奖学金政策" 
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    发送请求
+                </button>
+            </form>
+
+            <div id="resultContainer" style="display: none;" class="result-container">
+                <h3>📊 回答</h3>
+                <div id="resultContent" class="result-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单的 Markdown 渲染函数（不依赖外部库）
+        function renderMarkdown(markdown) {
+            if (!markdown) return '';
+            
+            // 转义 HTML 特殊字符
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            let html = markdown;
+            
+            // 先处理代码块（避免代码块内的内容被其他规则处理）
+            const codeBlocks = [];
+            html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
+                const id = `__CODE_BLOCK_${codeBlocks.length}__`;
+                codeBlocks.push('<pre><code>' + escapeHtml(code.trim()) + '</code></pre>');
+                return id;
+            });
+            
+            // 行内代码
+            html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+            
+            // 标题（按顺序处理，从三级到一级）
+            html = html.replace(/^#### (.*$)/gm, '<h4>$1</h4>');
+            html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            
+            // 粗体（必须在斜体之前）
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+            
+            // 斜体
+            html = html.replace(/(?<!\*)\*(?!\*)([^*]+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+            html = html.replace(/(?<!_)_(?!_)([^_]+?)(?<!_)_(?!_)/g, '<em>$1</em>');
+            
+            // 链接
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // 水平线
+            html = html.replace(/^---$/gm, '<hr>');
+            
+            // 处理列表（先处理有序列表，再处理无序列表）
+            const lines = html.split('\n');
+            let inList = false;
+            let listType = '';
+            let listItems = [];
+            
+            const processedLines = lines.map((line, index) => {
+                const trimmed = line.trim();
+                
+                // 有序列表
+                const orderedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
+                if (orderedMatch) {
+                    if (!inList || listType !== 'ol') {
+                        if (inList && listType === 'ul') {
+                            return '</ul>\n<ol><li>' + orderedMatch[2] + '</li>';
+                        }
+                        inList = true;
+                        listType = 'ol';
+                        return '<ol><li>' + orderedMatch[2] + '</li>';
+                    }
+                    return '<li>' + orderedMatch[2] + '</li>';
+                }
+                
+                // 无序列表
+                const unorderedMatch = trimmed.match(/^[\*\-\+]\s+(.+)$/);
+                if (unorderedMatch) {
+                    if (!inList || listType !== 'ul') {
+                        if (inList && listType === 'ol') {
+                            return '</ol>\n<ul><li>' + unorderedMatch[1] + '</li>';
+                        }
+                        inList = true;
+                        listType = 'ul';
+                        return '<ul><li>' + unorderedMatch[1] + '</li>';
+                    }
+                    return '<li>' + unorderedMatch[1] + '</li>';
+                }
+                
+                // 非列表项
+                if (inList) {
+                    inList = false;
+                    const closeTag = listType === 'ol' ? '</ol>' : '</ul>';
+                    listType = '';
+                    return closeTag + '\n' + (trimmed || '<br>');
+                }
+                
+                return trimmed || '<br>';
+            });
+            
+            html = processedLines.join('\n');
+            if (inList) {
+                html += (listType === 'ol' ? '</ol>' : '</ul>');
+            }
+            
+            // 引用
+            html = html.replace(/^>\s+(.*$)/gm, '<blockquote>$1</blockquote>');
+            
+            // 恢复代码块
+            codeBlocks.forEach((code, index) => {
+                html = html.replace(`__CODE_BLOCK_${index}__`, code);
+            });
+            
+            // 处理段落（将连续的非空行组合成段落）
+            html = html.split(/\n\n+/).map(block => {
+                block = block.trim();
+                if (!block) return '';
+                // 如果已经是 HTML 标签，直接返回
+                if (block.match(/^<[h|p|u|o|b|p|h|d]/)) {
+                    return block;
+                }
+                // 否则包装成段落
+                return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+            }).join('\n');
+            
+            // 清理多余的换行
+            html = html.replace(/\n{3,}/g, '\n\n');
+            
+            return html;
+        }
+
+        const form = document.getElementById('testForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultContent = document.getElementById('resultContent');
+        const promptInput = document.getElementById('prompt');
+
+        // 检测是否使用 file:// 协议
+        function checkProtocol() {
+            if (window.location.protocol === 'file:') {
+                const warning = document.createElement('div');
+                warning.className = 'error';
+                warning.style.cssText = 'padding: 15px; margin-bottom: 20px; border-radius: 6px; background: #fff3cd; border-left: 4px solid #ffc107;';
+                warning.innerHTML = '<strong>⚠️ 提示：</strong>检测到您使用 file:// 协议打开页面。请使用 HTTP 服务器运行此页面，例如：<br>' +
+                    '<code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 3px;">python -m http.server 8000</code> 或 ' +
+                    '<code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 3px;">npx http-server -p 8000</code><br>' +
+                    '然后在浏览器中访问 <code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 3px;">http://localhost:8000/test-dashscope-agent.html</code>';
+                document.querySelector('.content').insertBefore(warning, document.querySelector('.info-box'));
+            }
+        }
+
+        // 从 localStorage 恢复问题
+        window.addEventListener('DOMContentLoaded', () => {
+            checkProtocol();
+            const savedPrompt = localStorage.getItem('dashscope_prompt');
+            if (savedPrompt) {
+                promptInput.value = savedPrompt;
+            }
+        });
+
+        // 后端 API 地址
+        function getApiBaseUrl() {
+            // 如果使用 file:// 协议，使用固定地址
+            if (window.location.protocol === 'file:') {
+                return 'http://localhost:8081/api-template/api/dashscope';
+            }
+            // 否则根据当前域名构建
+            const origin = window.location.origin;
+            if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+                return 'http://localhost:8081/api-template/api/dashscope';
+            }
+            return origin + '/api-template/api/dashscope';
+        }
+
+        const API_BASE_URL = getApiBaseUrl();
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const prompt = promptInput.value.trim();
+
+            if (!prompt) {
+                alert('请输入问题！');
+                return;
+            }
+
+            // 保存到 localStorage
+            localStorage.setItem('dashscope_prompt', prompt);
+
+            // 显示加载状态
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span>请求中...';
+            resultContainer.style.display = 'block';
+            resultContainer.className = 'result-container';
+            resultContent.innerHTML = '<p style="color: #666;">正在发送请求...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt
+                    })
+                });
+
+                const result = await response.json();
+
+                // 显示结果
+                if (result.code === 200 && result.data) {
+                    resultContainer.className = 'result-container success';
+                    // 使用本地 Markdown 渲染函数
+                    const html = renderMarkdown(result.data);
+                    resultContent.innerHTML = html;
+                } else {
+                    resultContainer.className = 'result-container error';
+                    resultContent.innerHTML = `<p style="color: #c62828;"><strong>错误：</strong>${result.message || '请求失败'}</p>`;
+                }
+            } catch (error) {
+                resultContainer.className = 'result-container error';
+                let errorMsg = error.message;
+                if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                    errorMsg = 'CORS 错误：请确保使用 HTTP 服务器运行此页面，而不是直接打开文件。';
+                }
+                resultContent.innerHTML = `<p style="color: #c62828;"><strong>请求失败：</strong>${errorMsg}</p><p style="color: #666; font-size: 12px; margin-top: 10px;">请确保：<br>1. 后端服务已启动（端口 8081）<br>2. 使用 HTTP 服务器运行此页面（如：python -m http.server 8000）<br>3. API 地址：${API_BASE_URL}</p>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '发送请求';
+            }
+        });
+
+        // 添加键盘快捷键：Ctrl+Enter 提交
+        promptInput.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
