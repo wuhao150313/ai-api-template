@@ -76,5 +76,9 @@ public class ChatSession implements Serializable {
      */
     private Boolean deleted;
 
+    /**
+     * 收藏状态（0-未收藏，1-已收藏）
+     */
+    private Boolean star;
 
 }

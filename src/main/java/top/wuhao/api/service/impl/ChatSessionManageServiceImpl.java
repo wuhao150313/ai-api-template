@@ -39,6 +39,7 @@ public class ChatSessionManageServiceImpl extends ServiceImpl<ChatSessionMapper,
         chatSession.setUserId(userId);
         chatSession.setModelName(createSessionDTO.getModelName());
         chatSession.setStatus(false); // 0-活跃
+        chatSession.setStar(false);   // 默认未收藏
         chatSession.setCreateTime(LocalDateTime.now());
         chatSession.setUpdateTime(LocalDateTime.now());
         
@@ -109,9 +110,9 @@ public class ChatSessionManageServiceImpl extends ServiceImpl<ChatSessionMapper,
         // 移除常见的标点符号
         title = title.replaceAll("[，。！？；：''（）【】《》]", "");
         
-        // 限制标题长度为30个字符
-        if (title.length() > 30) {
-            title = title.substring(0, 30) + "...";
+        // 限制标题长度为10个字符
+        if (title.length() > 10) {
+            title = title.substring(0, 10) + "...";
         }
         
         // 如果处理后标题为空，使用默认标题
@@ -187,6 +188,7 @@ public class ChatSessionManageServiceImpl extends ServiceImpl<ChatSessionMapper,
     public List<ChatSessionVO> getUserSessionList(Long userId) {
         LambdaQueryWrapper<ChatSession> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatSession::getUserId, userId)
+                .orderByDesc(ChatSession::getStar)
                 .orderByDesc(ChatSession::getUpdateTime);
         
         List<ChatSession> sessions = this.list(queryWrapper);
@@ -212,5 +214,19 @@ public class ChatSessionManageServiceImpl extends ServiceImpl<ChatSessionMapper,
         ChatMessageVO vo = new ChatMessageVO();
         BeanUtils.copyProperties(chatMessage, vo);
         return vo;
+    }
+
+    @Override
+    @Transactional
+    public ChatSessionVO updateSessionStar(Long sessionId, Boolean star, Long userId) {
+        ChatSession chatSession = this.getById(sessionId);
+        if (chatSession == null || !chatSession.getUserId().equals(userId)) {
+            throw new RuntimeException("会话不存在或无权限访问");
+        }
+
+        chatSession.setStar(Boolean.TRUE.equals(star));
+        chatSession.setUpdateTime(LocalDateTime.now());
+        this.updateById(chatSession);
+        return convertToVO(chatSession);
     }
 }

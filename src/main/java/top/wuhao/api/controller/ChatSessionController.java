@@ -55,18 +55,18 @@ public class ChatSessionController {
         return Result.ok(session);
     }
     
-//    /**
-//     * 根据聊天内容动态修改会话标题
-//     */
-//    @PutMapping("/{id}/title/auto")
-//    @Operation(summary = "动态修改会话标题", description = "根据聊天内容自动修改会话标题")
-//    @SecurityRequirement(name = "Authorization")
-//    public Result<ChatSessionVO> updateSessionTitleByContent(
-//            @Parameter(description = "会话ID") @PathVariable Long id) {
-//        Long userId = SecurityUtils.getCurrentUserId();
-//        ChatSessionVO session = chatSessionManageService.updateSessionTitleByContent(id, userId);
-//        return Result.ok(session);
-//    }
+    /**
+     * 根据聊天内容动态修改会话标题
+     */
+    @PutMapping("/{id}/title/auto")
+    @Operation(summary = "动态修改会话标题", description = "根据聊天内容自动修改会话标题")
+    @SecurityRequirement(name = "Authorization")
+    public Result<ChatSessionVO> updateSessionTitleByContent(
+            @Parameter(description = "会话ID") @PathVariable Long id) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        ChatSessionVO session = chatSessionManageService.updateSessionTitleByContent(id, userId);
+        return Result.ok(session);
+    }
     
     /**
      * 获取会话详细（包含所有消息）
@@ -105,5 +105,19 @@ public class ChatSessionController {
         Long userId = SecurityUtils.getCurrentUserId();
         List<ChatSessionVO> sessions = chatSessionManageService.getUserSessionList(userId);
         return Result.ok(sessions);
+    }
+
+    /**
+     * 更新会话收藏状态
+     */
+    @PutMapping("/{id}/star")
+    @Operation(summary = "更新会话收藏状态", description = "设置或取消会话收藏状态")
+    @SecurityRequirement(name = "Authorization")
+    public Result<ChatSessionVO> updateSessionStar(
+            @Parameter(description = "会话ID") @PathVariable Long id,
+            @Parameter(description = "收藏标记，true=收藏，false=取消") @RequestParam Boolean star) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        ChatSessionVO session = chatSessionManageService.updateSessionStar(id, star, userId);
+        return Result.ok(session);
     }
 }

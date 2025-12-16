@@ -42,6 +42,9 @@ public class ChatSessionVO {
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
     
+    @Schema(description = "收藏状态（0-未收藏，1-已收藏）")
+    private Boolean star;
+
     @Schema(description = "会话消息列表")
     private List<ChatMessageVO> messages;
 }

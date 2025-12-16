@@ -76,4 +76,14 @@ public interface IChatSessionManageService {
      * @return 会话列表
      */
     List<ChatSessionVO> getUserSessionList(Long userId);
+
+    /**
+     * 更新会话收藏状态
+     *
+     * @param sessionId 会话ID
+     * @param star 收藏标识（true 收藏 / false 取消）
+     * @param userId 用户ID
+     * @return 更新后的会话
+     */
+    ChatSessionVO updateSessionStar(Long sessionId, Boolean star, Long userId);
 }
